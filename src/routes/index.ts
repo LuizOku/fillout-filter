@@ -1,19 +1,16 @@
-// routes.js
-import { applyFilters } from "../helpers/filters";
-import axios from "axios";
+import { applyFilters, FilterClauseT } from "../helpers/filters";
+import axios, { AxiosResponse } from "axios";
+import { Request, Response, Express } from "express";
 
-import { Express } from "express";
-
-export function configureRoutes(app: Express, apiKey: string) {
-  app.get("/:formId/filteredResponses", async (req, res) => {
-    console.log("apiKey", apiKey);
+export function configureRoutes(app: Express, apiKey: string): void {
+  app.get("/:formId/filteredResponses", async (req: Request, res: Response) => {
     try {
       const { formId } = req.params;
       const { filters, ...filloutParams } = req.query;
-      const filtersParam =
+      const filtersParam: FilterClauseT[] =
         typeof filters === "string" ? JSON.parse(filters) : [];
 
-      const response = await axios.get(
+      const response: AxiosResponse = await axios.get(
         `https://api.fillout.com/v1/api/forms/${formId}/submissions`,
         {
           headers: {
@@ -23,7 +20,7 @@ export function configureRoutes(app: Express, apiKey: string) {
         }
       );
 
-      let filteredResponse = response.data;
+      let filteredResponse: any = response.data;
 
       if (filtersParam.length) {
         const filteredResponses = applyFilters(
@@ -39,7 +36,7 @@ export function configureRoutes(app: Express, apiKey: string) {
       }
 
       res.json(filteredResponse);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching responses:", error);
       res.status(500).json({ error: "Internal server error" });
     }

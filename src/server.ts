@@ -1,12 +1,12 @@
-import express from "express";
+import express, { Express } from "express";
 import dotenv from "dotenv";
 import { configureRoutes } from "./routes";
 
 dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-const apiKey = process.env.API_KEY || "";
+const app: Express = express();
+const PORT: number = parseInt(process.env.PORT || "3000");
+const apiKey: string = process.env.API_KEY || "";
 
 configureRoutes(app, apiKey);
 
